@@ -1,4 +1,4 @@
-FROM ubuntu:20.04.2
+FROM ubuntu:22.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -12,6 +12,8 @@ RUN apt-get update \
         unzip \
         wget \
         zip \
+        ca-certificates \
+        python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
 COPY postInstall /

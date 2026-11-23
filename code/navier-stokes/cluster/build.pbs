@@ -1,0 +1,22 @@
+#!/bin/bash
+#PBS -N ns_build
+#PBS -q gpu
+#PBS -l select=1:ncpus=4:ngpus=1
+#PBS -l walltime=02:00:00
+#PBS -j oe
+set -euo pipefail
+cd "$PBS_O_WORKDIR"
+umask 077
+project=/work/$(id -un)/amg-ann
+mkdir -p "$project"
+scratch=$(mktemp -d "/scratch_local/ns-build-$PBS_JOBID.XXXXXX")
+export APPTAINER_TMPDIR="$scratch/tmp" APPTAINER_CACHEDIR="$scratch/cache"
+mkdir -p "$APPTAINER_TMPDIR" "$APPTAINER_CACHEDIR"
+# Publish a complete image on the shared filesystem only after a successful build.
+image="$project/ns-l4.sif"
+if [[ -e "$image" ]]; then echo "Image already exists: $image"; exit 1; fi
+apptainer build --fakeroot --nv "$scratch/ns-l4.sif" environment/navier-stokes-gpu.def
+stage=$(mktemp "$project/.ns-l4.XXXXXX")
+trap 'rm -f "$stage"' EXIT
+cp "$scratch/ns-l4.sif" "$stage"
+ln "$stage" "$image"

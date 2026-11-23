@@ -10,6 +10,25 @@ The code is divided into two main folders:
 
 We also provide a `Dockerfile` in the `environment` folder to run all the code inside a pre-made CPU-only environment. However, this code was designed to run on a cluster. Thus, replication of the results in a Docker container may by prohibitively expensive or may not exactly match the one shown in the paper.
 
+## Polimi GPU cluster
+
+[VPN access, PBS smoke test and full GPU run](code/navier-stokes/CLUSTER.md).
+
+## Navier–Stokes end-to-end experiment
+
+A new [2D fractional-step Navier–Stokes / ANN / AMG pipeline](code/navier-stokes/README.md)
+includes finite-element solves, local timing-data generation, CNN training,
+runtime threshold selection, and comparison with fixed-threshold BoomerAMG.
+With Docker running and Python 3.10+ installed, run from this directory:
+
+```bash
+bash code/navier-stokes/run_local.sh my-first-run
+```
+
+See the linked guide for the numerical method, dependencies, outputs, tests and
+scope. The local preset checks correctness and integration; it does not assume
+the ANN is faster on small systems.
+
 # Cite
 Please cite this as:
 ```

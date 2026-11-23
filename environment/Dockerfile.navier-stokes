@@ -1,0 +1,12 @@
+FROM ubuntu:22.04
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-pip python3-scipy python3-petsc4py-real python3-pytest \
+    && rm -rf /var/lib/apt/lists/*
+RUN python3 -m pip install --no-cache-dir --no-deps scikit-fem==12.0.2
+RUN python3 -c 'import glob, pathlib; paths = glob.glob("/usr/lib/petscdir/petsc*/**/lib/python3/dist-packages", recursive=True); assert len(paths) == 1, paths; pathlib.Path("/usr/local/lib/python3.10/dist-packages/petsc.pth").write_text(paths[0] + "\n")'
+RUN python3 -c 'from petsc4py import PETSc; assert PETSc.Sys.hasExternalPackage("hypre")'
+ENV OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+ENV PYTHONPATH=/workspace/code/navier-stokes
+WORKDIR /workspace
+ENTRYPOINT ["python3", "-m", "ns_amg"]

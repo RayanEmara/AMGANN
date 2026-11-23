@@ -22,11 +22,11 @@ struct Settings {
   const bool output_results;
   const bool evaluate_errors;
 
-  const bool make_view;
-  const long int view_size;
+  const bool make_view; // pooling
+  const long int view_size; // grandezza matrice pooling M
 
-  const std::string stats_filename;
-  const std::string settings_filename;
+  const std::string stats_filename; // file dove salviamo stat
+  const std::string settings_filename; // 
 
   const bool output_setup_details;
 };
